@@ -101,24 +101,46 @@ def wilcoxon_signed_rank(data1, data2):
 
 
 def plot_results(results, filename="results.png"):
-    """Plot runtimes for each algorithm and save to PNG."""
+    """Plot runtimes with error bars and save to PNG."""
     if plt is None:
         print("matplotlib not installed, skipping plot")
         return
-    plt.figure()
+
+    markers = {
+        'brute_force': 'o',
+        'branch_and_bound': 's',
+        'ilp_solver': '^',
+        'goemans_williamson': 'D',
+        'qaoa': 'x',
+    }
+
+    fig, ax = plt.subplots()
     for name, records in results.items():
-        ordered = sorted(records, key=lambda r: r['n'])
-        xs = [r['n'] for r in ordered]
-        ys = [r['time'] for r in ordered]
-        plt.plot(xs, ys, label=name)
-    plt.xlabel('Number of vertices')
-    plt.ylabel('Runtime (s)')
-    plt.yscale('log')
-    plt.xscale('log')
-    plt.legend()
-    plt.title('Max-Cut runtime comparison')
-    plt.tight_layout()
-    plt.savefig(filename)
-    plt.close()
+        by_n = {}
+        for r in records:
+            by_n.setdefault(r['n'], []).append(r['time'])
+        xs = sorted(by_n)
+        means = [mean(by_n[n]) for n in xs]
+        sds = [stdev(by_n[n]) if len(by_n[n]) > 1 else 0 for n in xs]
+        ax.errorbar(
+            xs,
+            means,
+            yerr=sds,
+            label=name,
+            marker=markers.get(name, 'o'),
+            capsize=3,
+        )
+
+    ax.set_xlabel('Number of vertices')
+    ax.set_ylabel('Runtime (s)')
+    ax.set_xscale('log')
+    ax.set_yscale('log')
+    ax.set_ylim(5e-4, 2e-2)
+    ax.grid(True, which='both', linestyle='--', linewidth=0.5)
+    ax.legend(title='Algorithm', fontsize='small', loc='upper left', bbox_to_anchor=(1.05, 1))
+    ax.set_title('Max-Cut runtime comparison')
+    fig.tight_layout()
+    fig.savefig(filename)
+    plt.close(fig)
     print(f"Saved plot to {filename}")
 

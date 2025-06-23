@@ -6,8 +6,9 @@ from experiments import (
 )
 
 if __name__ == '__main__':
-    sizes = [4, 5, 6]
-    results = run_experiments(sizes, runs=1)
+    # run several sizes to expose scaling behaviour
+    sizes = [4, 5, 6, 8, 10]
+    results = run_experiments(sizes, runs=5)
     summary = summarize_results(results)
     for alg, stats in summary.items():
         print(

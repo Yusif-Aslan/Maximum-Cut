@@ -21,8 +21,10 @@ All implementations work with the Python standard library. The ILP solver additi
 ## Plotting results
 
 If `matplotlib` is installed, running `python3 main.py` will also produce a
-`results.png` file containing a log--log plot of runtime versus graph size for
-each algorithm. The plot uses different colors for each line and includes a
-legend describing which algorithm each color corresponds to.
+`results.png` file. The figure shows a log--log runtime comparison of all
+algorithms with markers and error bars (mean ± SD) for every tested graph size.
+The y-axis is zoomed in to highlight the differences between the classical
+methods and QAOA. Each line uses a different marker and the legend is placed
+outside the axes for readability.
 
 Graphs for the experiments are generated on-the-fly using `experiments.generate_random_graph`.
