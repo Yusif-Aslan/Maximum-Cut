@@ -17,3 +17,12 @@ python3 main.py
 ```
 
 All implementations work with the Python standard library. The ILP solver additionally tries to import `pulp` if available but will fall back to brute force otherwise.
+
+## Plotting results
+
+If `matplotlib` is installed, running `python3 main.py` will also produce a
+`results.png` file containing a log--log plot of runtime versus graph size for
+each algorithm. The plot uses different colors for each line and includes a
+legend describing which algorithm each color corresponds to.
+
+Graphs for the experiments are generated on-the-fly using `experiments.generate_random_graph`.

@@ -3,6 +3,11 @@ import time
 import math
 from statistics import mean, stdev
 
+try:
+    import matplotlib.pyplot as plt
+except Exception:
+    plt = None
+
 from graphs import Graph
 from algorithms import brute_force, branch_and_bound, goemans_williamson, qaoa, ilp_solver
 
@@ -93,4 +98,27 @@ def wilcoxon_signed_rank(data1, data2):
     variance = n * (n + 1) * (2 * n + 1) / 24
     z = (rank_sum_pos - expected) / math.sqrt(variance)
     return z
+
+
+def plot_results(results, filename="results.png"):
+    """Plot runtimes for each algorithm and save to PNG."""
+    if plt is None:
+        print("matplotlib not installed, skipping plot")
+        return
+    plt.figure()
+    for name, records in results.items():
+        ordered = sorted(records, key=lambda r: r['n'])
+        xs = [r['n'] for r in ordered]
+        ys = [r['time'] for r in ordered]
+        plt.plot(xs, ys, label=name)
+    plt.xlabel('Number of vertices')
+    plt.ylabel('Runtime (s)')
+    plt.yscale('log')
+    plt.xscale('log')
+    plt.legend()
+    plt.title('Max-Cut runtime comparison')
+    plt.tight_layout()
+    plt.savefig(filename)
+    plt.close()
+    print(f"Saved plot to {filename}")
 
