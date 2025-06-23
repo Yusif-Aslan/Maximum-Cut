@@ -1,15 +1,19 @@
-from experiments import run_experiments, wilcoxon_signed_rank
+from experiments import (
+    run_experiments,
+    summarize_results,
+    pairwise_wilcoxon,
+)
 
 if __name__ == '__main__':
     sizes = [4, 5]
     results = run_experiments(sizes, runs=1)
-    for alg, data in results.items():
-        avg_val = sum(d['value'] for d in data) / len(data)
-        avg_time = sum(d['time'] for d in data) / len(data)
-        print(f"{alg}: value={avg_val:.2f} time={avg_time:.4f}s")
+    summary = summarize_results(results)
+    for alg, stats in summary.items():
+        print(
+            f"{alg}: value={stats['value_mean']:.2f}±{stats['value_sd']:.2f} "
+            f"time={stats['time_mean']:.4f}s"
+        )
 
-    # Example Wilcoxon test between brute force and branch and bound times
-    times_brute = [d['time'] for d in results['brute_force']]
-    times_bb = [d['time'] for d in results['branch_and_bound']]
-    z = wilcoxon_signed_rank(times_brute, times_bb)
-    print(f"Wilcoxon statistic (brute_force vs branch_and_bound): {z:.3f}")
+    print("\nWilcoxon Z scores (times):")
+    for (a, b), z in pairwise_wilcoxon(results).items():
+        print(f"{a} vs {b}: {z:.3f}")

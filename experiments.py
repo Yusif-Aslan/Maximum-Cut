@@ -4,7 +4,7 @@ import math
 from statistics import mean, stdev
 
 from graphs import Graph
-from algorithms import brute_force, branch_and_bound, goemans_williamson, qaoa
+from algorithms import brute_force, branch_and_bound, goemans_williamson, qaoa, ilp_solver
 
 
 def generate_random_graph(n, p=0.5, weight_range=(1, 1)):
@@ -28,6 +28,7 @@ def run_experiments(num_vertices_list, runs=3):
     algs = {
         'brute_force': brute_force.max_cut_brute_force,
         'branch_and_bound': branch_and_bound.max_cut_branch_and_bound,
+        'ilp_solver': ilp_solver.max_cut_ilp,
         'goemans_williamson': goemans_williamson.goemans_williamson,
         'qaoa': qaoa.qaoa_max_cut,
     }
@@ -41,6 +42,37 @@ def run_experiments(num_vertices_list, runs=3):
                 gap = 0 if opt_value == 0 else (opt_value - value) / opt_value
                 results[name].append({'n': n, 'value': value, 'time': duration, 'gap': gap})
     return results
+
+
+def summarize_results(results):
+    """Compute mean and standard deviation of metrics for each algorithm."""
+    summary = {}
+    for name, records in results.items():
+        times = [r['time'] for r in records]
+        values = [r['value'] for r in records]
+        gaps = [r['gap'] for r in records]
+        summary[name] = {
+            'time_mean': mean(times),
+            'time_sd': stdev(times) if len(times) > 1 else 0.0,
+            'value_mean': mean(values),
+            'value_sd': stdev(values) if len(values) > 1 else 0.0,
+            'gap_mean': mean(gaps),
+        }
+    return summary
+
+
+def pairwise_wilcoxon(results, key='time'):
+    """Return Wilcoxon statistics for each algorithm pair."""
+    algs = list(results.keys())
+    matrix = {}
+    for i, a in enumerate(algs):
+        for j, b in enumerate(algs):
+            if i >= j:
+                continue
+            x = [r[key] for r in results[a]]
+            y = [r[key] for r in results[b]]
+            matrix[(a, b)] = wilcoxon_signed_rank(x, y)
+    return matrix
 
 
 def wilcoxon_signed_rank(data1, data2):
