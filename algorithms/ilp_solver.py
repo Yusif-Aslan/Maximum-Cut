@@ -3,7 +3,13 @@ try:
 except Exception:
     pulp = None
 
-from . import brute_force
+try:
+    from . import brute_force
+except ImportError:  # allow running as a script
+    import os
+    import sys
+    sys.path.append(os.path.dirname(os.path.dirname(__file__)))
+    import brute_force
 
 
 def max_cut_ilp(graph):
@@ -30,3 +36,16 @@ def max_cut_ilp(graph):
     value = pulp.value(prob.objective)
     bits = [int(var.varValue) for var in x]
     return value, bits
+
+
+if __name__ == "__main__":
+    from graphs import Graph
+
+    g = Graph(4)
+    g.add_edge(0, 1, 1)
+    g.add_edge(1, 2, 1)
+    g.add_edge(2, 3, 1)
+    g.add_edge(3, 0, 1)
+    val, bits = max_cut_ilp(g)
+    print("Cut value:", val)
+    print("Partition:", bits)
