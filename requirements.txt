@@ -7,3 +7,6 @@ pennylane
 cirq
 pytest
 pyyaml
+gurobipy
+notebook
+ipykernel
