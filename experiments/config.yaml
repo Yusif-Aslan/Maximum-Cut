@@ -1,0 +1,14 @@
+# Default experiment configuration
+
+graphs:
+  - n: 6
+    p: 0.5
+    weight_range: [1, 10]
+  - n: 8
+    p: 0.5
+    weight_range: [1, 10]
+
+algorithms:
+  gw_trials: [5]
+  qaoa_depths: [1]
+  qaoa_steps: [50]
