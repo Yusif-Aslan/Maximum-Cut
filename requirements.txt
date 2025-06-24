@@ -6,3 +6,4 @@ scipy
 pennylane
 cirq
 pytest
+pyyaml
