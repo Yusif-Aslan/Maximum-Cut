@@ -1,4 +1,3 @@
-"""Brute-force exact algorithm for Maximum Cut."""
 
 from __future__ import annotations
 
@@ -9,7 +8,6 @@ import networkx as nx
 
 
 def maxcut_bruteforce(g: nx.Graph) -> Tuple[List[int], float]:
-    """Compute maximum cut by exhaustive search."""
     best_cut = []
     best_value = float('-inf')
     nodes = list(g.nodes())

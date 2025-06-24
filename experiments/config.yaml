@@ -7,7 +7,9 @@ graphs:
     weight_range: [1, 10]
 
 algorithms:
+  exact_repeats: 5
   gw_trials: [5, 10, 20]
+  gw_repeats:   10
   qaoa_depths: [1, 2]
   qaoa_steps: [50]
   qaoa_repeats: 10
