@@ -1,0 +1,12 @@
+networkx
+numpy
+pandas
+matplotlib
+scipy
+pennylane
+cirq
+pytest
+pyyaml
+gurobipy
+notebook
+ipykernel
